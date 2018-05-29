@@ -1,20 +1,24 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 )
 
 func rootHandler(c *gin.Context) {
-	rec := GetByKey("1")
-	fmt.Printf("%s", rec)
+	rec := GetByKey(c, "1")
+	c.JSON(200, rec)
+}
 
-	c.String(200, "hallo")
+func detailHandler(c *gin.Context) {
+	key := c.Param("key")
+	rec := GetByKey(c, key)
+	c.JSON(200, rec)
 }
 
 func main() {
 	r := gin.New()
+	r.Use(SetClient())
 	r.GET("/", rootHandler)
+	r.GET("/:key", detailHandler)
 	r.Run(":8000")
 }
